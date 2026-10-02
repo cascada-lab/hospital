@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management System</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-light: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --card-border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- 1. HEADER / NAVBAR --- */
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--card-border);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            color: var(--text-main);
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: color 0.2s ease;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        /* --- 2. HERO / BOOK APPOINTMENT --- */
+        .hero-section {
+            background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 60px 40px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background-color: var(--primary);
+            color: #ffffff;
+            padding: 16px 36px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        /* --- 3. DOCTORS SECTION --- */
+        .section-box {
+            background-color: #ffffff;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-light);
+            border: 1px solid var(--card-border);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            max-width: 400px;
+            margin-top: 10px;
+        }
+
+        .doctors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+
+        .doctor-card {
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background-color: #ffffff;
+            transition: border-color 0.2s ease;
+        }
+
+        .doctor-card:hover {
+            border-color: var(--primary);
+        }
+
+        .doctor-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: #dbeafe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .doctor-info h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .doctor-info p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* 4. ABOUT SECTION*/
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .about-col h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--primary);
+        }
+
+        .about-col ul {
+            list-style: none;
+        }
+
+        .about-col ul li {
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .about-col ul li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* --- MODAL --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        /* Responsive Layout */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2rem; }
+            .section-box { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- TOP HEADER / NAV BAR -->
+        <header>
+            <div class="nav-wrapper">
+                <div class="logo">HOSPITAL</div>
+                <nav>
+                     <a href="#home">Home</a>
+                    <a href="#about">About</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- HERO SECTION: BOOK APPOINTMENT -->
+        <section class="hero-section">
+            <h1 class="hero-title">BOOK APPOINTMENT</h1>
+            <p class="hero-subtitle">Easy Online Scheduling for Quality Healthcare</p>
+            <button class="btn-primary" onclick="openModal()">BOOK HERE</button>
+        </section>
+
+        <!-- DOCTORS SECTION -->
+        <section class="section-box">
+            <div class="section-header">
+                <h2 class="section-title">DOCTORS</h2>
+                <div class="search-bar">
+                    <span>Find your doctor</span>
+                    <span style="margin-left: auto;">➔</span>
+                </div>
+            </div>
+
+            <!-- Grid rendered with standard items (or dynamic Thymeleaf loop) -->
+            <div class="doctors-grid">
+                <!-- Example Doctor Profile 1 -->
+                <div class="doctor-card" th:each="doctor : ${doctors}">
+                    <div class="doctor-avatar">👨‍⚕️</div>
+                    <div class="doctor-info">
+                        <h4 th:text="${doctor.name}">Dr. Sarah Jenkins</h4>
+                        <p><strong>Specialty:</strong> <span th:text="${doctor.specialty}">Cardiology</span></p>
+                        <p><strong>Experience:</strong> <span th:text="${doctor.experienceYears}">12</span> years</p>
+                        <p><strong>Contact:</strong> <span th:text="${doctor.contact}">sarah@hospital.com</span></p>
+                    </div>
+                </div>
+
+                <!-- Fallback Static Profile (for preview before Java integration) -->
+                <div class="doctor-card" th:remove="all">
+                    <div class="doctor-avatar">👩‍⚕️</div>
+                    <div class="doctor-info">
+                        <h4>Dr. Michael Chen</h4>
+                        <p><strong>Specialty:</strong> Neurology</p>
+                        <p><strong>Experience:</strong> 8 years</p>
+                        <p><strong>Contact:</strong> michael@hospital.com</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT SECTION -->
+        <section id="about" class="section-box">
+            <h3 class="section-title" style="text-align: center; margin-bottom: 30px;">ABOUT</h3>
+            <div class="about-grid">
+                <div class="about-col">
+                    <h4>Hospital History</h4>
+                    <ul>
+                        <li>Established in 1995</li>
+                        <li>Serving over 500k patients</li>
+                        <li>State-of-the-art facilities</li>
+                        <li>Award-winning research center</li>
+                    </ul>
+                </div>
+
+                <div class="about-col">
+                    <h4>Our Mission</h4>
+                    <ul>
+                        <li>Compassionate healthcare</li>
+                        <li>24/7 Emergency response</li>
+                        <li>Affordable treatment plans</li>
+                        <li>Cutting-edge clinical technology</li>
+                    </ul>
+                </div>
+
+                <div class="about-col">
+                    <h4>Leadership</h4>
+                    <ul>
+                        <li>Chief Executive Officer</li>
+                        <li>Chief Medical Officer</li>
+                        <li>Head of Surgery</li>
+                        <li>Director of Patient Care</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- BOOKING FORM MODAL (Connects to Spring Boot @PostMapping) -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Schedule Appointment</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form th:action="@{/book-appointment}" method="post">
+                <div class="form-group">
+                    <label for="patientName">Patient Name</label>
+                    <input type="text" id="patientName" name="patientName" required placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label for="doctorName">Select Doctor</label>
+                    <select id="doctorName" name="doctorName" required>
+                        <option value="Dr. Sarah Jenkins">Dr. Sarah Jenkins (Cardiology)</option>
+                        <option value="Dr. Michael Chen">Dr. Michael Chen (Neurology)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="appointmentDate">Appointment Date</label>
+                    <input type="date" id="appointmentDate" name="appointmentDate" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('bookingModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('bookingModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside content
+        window.onclick = function(event) {
+            const modal = document.getElementById('bookingModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
